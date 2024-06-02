@@ -93,7 +93,7 @@ const Home = ({ user, logout }) => {
         });
       });
     },
-    [setConversations, conversations]
+    [setConversations]
   );
 
   const addMessageToConversation = useCallback(
@@ -106,6 +106,7 @@ const Home = ({ user, logout }) => {
           otherUser: sender,
           messages: [message],
           latestMessageText: message.text,
+          countNewMessage: message.countNewMessage,
         };
         setConversations((prev) => [newConvo, ...prev]);
       } else {
@@ -116,6 +117,7 @@ const Home = ({ user, logout }) => {
                 ...convo,
                 messages: [...convo.messages, message],
                 latestMessageText: message.text,
+                countNewMessage: message.countNewMessage,
               };
             }
             return convo;
@@ -123,7 +125,7 @@ const Home = ({ user, logout }) => {
         );
       }
     },
-    [setConversations, conversations]
+    [setConversations]
   );
 
   const setActiveChat = (username) => {
@@ -208,6 +210,15 @@ const Home = ({ user, logout }) => {
     }
   };
 
+  const updateReadStatus = async (queryParam) => {
+    try {
+      const { data } = await axios.put(`/api/messages/${queryParam}`);
+      setConversations(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <Button onClick={handleLogout}>Logout</Button>
@@ -219,6 +230,7 @@ const Home = ({ user, logout }) => {
           clearSearchedUsers={clearSearchedUsers}
           addSearchedUsers={addSearchedUsers}
           setActiveChat={setActiveChat}
+          updateReadStatus={updateReadStatus}
         />
         <ActiveChat
           activeConversation={activeConversation}

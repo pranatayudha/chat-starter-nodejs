@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from "@material-ui/core";
+import { Box, Badge } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -17,12 +17,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Chat = ({ conversation, setActiveChat }) => {
+const Chat = ({ conversation, setActiveChat, updateReadStatus }) => {
   const classes = useStyles();
   const { otherUser } = conversation;
 
   const handleClick = async (conversation) => {
     await setActiveChat(conversation.otherUser.username);
+    await updateReadStatus(conversation.id);
   };
 
   return (
@@ -33,7 +34,18 @@ const Chat = ({ conversation, setActiveChat }) => {
         online={otherUser.online}
         sidebar={true}
       />
-      <ChatContent conversation={conversation} />
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+          marginRight: 20,
+        }}
+      >
+        <ChatContent conversation={conversation} />
+        <Badge badgeContent={conversation.countNewMessage} color="primary" />
+      </Box>
     </Box>
   );
 };
