@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect, useState, useContext } from "react";
-import axios from "axios";
-import { useHistory } from "react-router-dom";
-import { Grid, CssBaseline, Button } from "@material-ui/core";
+import { Button, CssBaseline, Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-
-import { SidebarContainer } from "../components/Sidebar";
+import axios from "axios";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { ActiveChat } from "../components/ActiveChat";
+import { SidebarContainer } from "../components/Sidebar";
 import { SocketContext } from "../context/socket";
 
 const useStyles = makeStyles((theme) => ({
@@ -135,12 +134,12 @@ const Home = ({ user, logout }) => {
     setConversations((prev) =>
       prev.map((convo) => {
         if (convo.otherUser.id === id) {
-          const convoCopy = { ...convo };
-          convoCopy.otherUser = { ...convoCopy.otherUser, online: true };
-          return convoCopy;
-        } else {
-          return convo;
+          return {
+            ...convo,
+            otherUser: { ...convo.otherUser, online: true },
+          };
         }
+        return convo;
       })
     );
   }, []);
@@ -149,12 +148,12 @@ const Home = ({ user, logout }) => {
     setConversations((prev) =>
       prev.map((convo) => {
         if (convo.otherUser.id === id) {
-          const convoCopy = { ...convo };
-          convoCopy.otherUser = { ...convoCopy.otherUser, online: false };
-          return convoCopy;
-        } else {
-          return convo;
+          return {
+            ...convo,
+            otherUser: { ...convo.otherUser, online: false },
+          };
         }
+        return convo;
       })
     );
   }, []);
